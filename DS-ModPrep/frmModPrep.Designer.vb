@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmModPrep
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,30 +20,47 @@ Partial Class frmModPrep
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmModPrep))
         Me.txtEXEfile = New System.Windows.Forms.TextBox()
         Me.lblGAFile = New System.Windows.Forms.Label()
-        Me.btnModify = New System.Windows.Forms.Button()
         Me.txtInfo = New System.Windows.Forms.RichTextBox()
-        Me.btnExtractBNDs = New System.Windows.Forms.Button()
-        Me.btnExtractDCX = New System.Windows.Forms.Button()
-        Me.btnDeleteDCX = New System.Windows.Forms.Button()
-        Me.btnExtractFRPG = New System.Windows.Forms.Button()
-        Me.btnExtractBHDs = New System.Windows.Forms.Button()
         Me.progCurFile = New System.Windows.Forms.ProgressBar()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.progOperation = New System.Windows.Forms.ProgressBar()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.lblProgCurFile = New System.Windows.Forms.Label()
         Me.lblProgOperation = New System.Windows.Forms.Label()
-        Me.btnBrowse = New System.Windows.Forms.Button()
-        Me.btnDeleteBNDs = New System.Windows.Forms.Button()
-        Me.btnDeleteFRPG = New System.Windows.Forms.Button()
-        Me.btnDeleteBHDs = New System.Windows.Forms.Button()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
+        Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOpenEXE = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.menuPatch = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuPatchOverwrite = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuPatchNew = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuCloseEXE = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.menuExit = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOperation = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOperationExtract = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOperationExtractDVDBNDs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOperationExtractDCXs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOperationExtractBNDs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOperationExtractBHDs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOperationDelete = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOperationDeleteDVDBNDs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOperationDeleteDCXs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOperationDeleteBNDs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOperationDeleteBHDs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.menuOperationCancel = New System.Windows.Forms.ToolStripMenuItem()
+        Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DarkSoulsModdingHelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Panel1.SuspendLayout()
+        Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'txtEXEfile
@@ -58,52 +75,16 @@ Partial Class frmModPrep
         resources.ApplyResources(Me.lblGAFile, "lblGAFile")
         Me.lblGAFile.Name = "lblGAFile"
         '
-        'btnModify
-        '
-        resources.ApplyResources(Me.btnModify, "btnModify")
-        Me.btnModify.Name = "btnModify"
-        Me.btnModify.UseVisualStyleBackColor = True
-        '
         'txtInfo
         '
-        resources.ApplyResources(Me.txtInfo, "txtInfo")
         Me.txtInfo.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.txtInfo.BorderStyle = System.Windows.Forms.BorderStyle.None
+        resources.ApplyResources(Me.txtInfo, "txtInfo")
         Me.txtInfo.Name = "txtInfo"
         Me.txtInfo.ReadOnly = True
         Me.txtInfo.ShortcutsEnabled = False
         Me.txtInfo.ShowSelectionMargin = True
         Me.txtInfo.TabStop = False
-        '
-        'btnExtractBNDs
-        '
-        resources.ApplyResources(Me.btnExtractBNDs, "btnExtractBNDs")
-        Me.btnExtractBNDs.Name = "btnExtractBNDs"
-        Me.btnExtractBNDs.UseVisualStyleBackColor = True
-        '
-        'btnExtractDCX
-        '
-        resources.ApplyResources(Me.btnExtractDCX, "btnExtractDCX")
-        Me.btnExtractDCX.Name = "btnExtractDCX"
-        Me.btnExtractDCX.UseVisualStyleBackColor = True
-        '
-        'btnDeleteDCX
-        '
-        resources.ApplyResources(Me.btnDeleteDCX, "btnDeleteDCX")
-        Me.btnDeleteDCX.Name = "btnDeleteDCX"
-        Me.btnDeleteDCX.UseVisualStyleBackColor = True
-        '
-        'btnExtractFRPG
-        '
-        resources.ApplyResources(Me.btnExtractFRPG, "btnExtractFRPG")
-        Me.btnExtractFRPG.Name = "btnExtractFRPG"
-        Me.btnExtractFRPG.UseVisualStyleBackColor = True
-        '
-        'btnExtractBHDs
-        '
-        resources.ApplyResources(Me.btnExtractBHDs, "btnExtractBHDs")
-        Me.btnExtractBHDs.Name = "btnExtractBHDs"
-        Me.btnExtractBHDs.UseVisualStyleBackColor = True
         '
         'progCurFile
         '
@@ -143,86 +124,220 @@ Partial Class frmModPrep
         resources.ApplyResources(Me.lblProgOperation, "lblProgOperation")
         Me.lblProgOperation.Name = "lblProgOperation"
         '
-        'btnBrowse
-        '
-        resources.ApplyResources(Me.btnBrowse, "btnBrowse")
-        Me.btnBrowse.Name = "btnBrowse"
-        Me.btnBrowse.UseVisualStyleBackColor = True
-        '
-        'btnDeleteBNDs
-        '
-        resources.ApplyResources(Me.btnDeleteBNDs, "btnDeleteBNDs")
-        Me.btnDeleteBNDs.Name = "btnDeleteBNDs"
-        Me.btnDeleteBNDs.UseVisualStyleBackColor = True
-        '
-        'btnDeleteFRPG
-        '
-        resources.ApplyResources(Me.btnDeleteFRPG, "btnDeleteFRPG")
-        Me.btnDeleteFRPG.Name = "btnDeleteFRPG"
-        Me.btnDeleteFRPG.UseVisualStyleBackColor = True
-        '
-        'btnDeleteBHDs
-        '
-        resources.ApplyResources(Me.btnDeleteBHDs, "btnDeleteBHDs")
-        Me.btnDeleteBHDs.Name = "btnDeleteBHDs"
-        Me.btnDeleteBHDs.UseVisualStyleBackColor = True
-        '
         'Panel1
         '
         resources.ApplyResources(Me.Panel1, "Panel1")
+        Me.Panel1.BackColor = System.Drawing.SystemColors.ControlDark
         Me.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.Panel1.Controls.Add(Me.txtInfo)
         Me.Panel1.Name = "Panel1"
+        '
+        'MenuStrip1
+        '
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.menuOperation, Me.HelpToolStripMenuItem})
+        resources.ApplyResources(Me.MenuStrip1, "MenuStrip1")
+        Me.MenuStrip1.Name = "MenuStrip1"
+        '
+        'FileToolStripMenuItem
+        '
+        Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuOpenEXE, Me.ToolStripSeparator1, Me.menuPatch, Me.menuCloseEXE, Me.ToolStripSeparator2, Me.menuExit})
+        Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
+        resources.ApplyResources(Me.FileToolStripMenuItem, "FileToolStripMenuItem")
+        '
+        'menuOpenEXE
+        '
+        Me.menuOpenEXE.Name = "menuOpenEXE"
+        resources.ApplyResources(Me.menuOpenEXE, "menuOpenEXE")
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        resources.ApplyResources(Me.ToolStripSeparator1, "ToolStripSeparator1")
+        '
+        'menuPatch
+        '
+        Me.menuPatch.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuPatchOverwrite, Me.menuPatchNew})
+        Me.menuPatch.Name = "menuPatch"
+        resources.ApplyResources(Me.menuPatch, "menuPatch")
+        '
+        'menuPatchOverwrite
+        '
+        Me.menuPatchOverwrite.Name = "menuPatchOverwrite"
+        resources.ApplyResources(Me.menuPatchOverwrite, "menuPatchOverwrite")
+        '
+        'menuPatchNew
+        '
+        Me.menuPatchNew.Checked = True
+        Me.menuPatchNew.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.menuPatchNew.Name = "menuPatchNew"
+        resources.ApplyResources(Me.menuPatchNew, "menuPatchNew")
+        '
+        'menuCloseEXE
+        '
+        Me.menuCloseEXE.Checked = True
+        Me.menuCloseEXE.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.menuCloseEXE.Name = "menuCloseEXE"
+        resources.ApplyResources(Me.menuCloseEXE, "menuCloseEXE")
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        resources.ApplyResources(Me.ToolStripSeparator2, "ToolStripSeparator2")
+        '
+        'menuExit
+        '
+        Me.menuExit.Name = "menuExit"
+        resources.ApplyResources(Me.menuExit, "menuExit")
+        '
+        'menuOperation
+        '
+        Me.menuOperation.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuOperationExtract, Me.menuOperationDelete, Me.ToolStripSeparator3, Me.menuOperationCancel})
+        Me.menuOperation.Name = "menuOperation"
+        resources.ApplyResources(Me.menuOperation, "menuOperation")
+        '
+        'menuOperationExtract
+        '
+        Me.menuOperationExtract.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuOperationExtractDVDBNDs, Me.menuOperationExtractDCXs, Me.menuOperationExtractBNDs, Me.menuOperationExtractBHDs})
+        Me.menuOperationExtract.Name = "menuOperationExtract"
+        resources.ApplyResources(Me.menuOperationExtract, "menuOperationExtract")
+        '
+        'menuOperationExtractDVDBNDs
+        '
+        Me.menuOperationExtractDVDBNDs.Name = "menuOperationExtractDVDBNDs"
+        resources.ApplyResources(Me.menuOperationExtractDVDBNDs, "menuOperationExtractDVDBNDs")
+        '
+        'menuOperationExtractDCXs
+        '
+        Me.menuOperationExtractDCXs.Name = "menuOperationExtractDCXs"
+        resources.ApplyResources(Me.menuOperationExtractDCXs, "menuOperationExtractDCXs")
+        '
+        'menuOperationExtractBNDs
+        '
+        Me.menuOperationExtractBNDs.Name = "menuOperationExtractBNDs"
+        resources.ApplyResources(Me.menuOperationExtractBNDs, "menuOperationExtractBNDs")
+        '
+        'menuOperationExtractBHDs
+        '
+        Me.menuOperationExtractBHDs.Checked = True
+        Me.menuOperationExtractBHDs.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.menuOperationExtractBHDs.Name = "menuOperationExtractBHDs"
+        resources.ApplyResources(Me.menuOperationExtractBHDs, "menuOperationExtractBHDs")
+        '
+        'menuOperationDelete
+        '
+        Me.menuOperationDelete.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuOperationDeleteDVDBNDs, Me.menuOperationDeleteDCXs, Me.menuOperationDeleteBNDs, Me.menuOperationDeleteBHDs})
+        Me.menuOperationDelete.Name = "menuOperationDelete"
+        resources.ApplyResources(Me.menuOperationDelete, "menuOperationDelete")
+        '
+        'menuOperationDeleteDVDBNDs
+        '
+        resources.ApplyResources(Me.menuOperationDeleteDVDBNDs, "menuOperationDeleteDVDBNDs")
+        Me.menuOperationDeleteDVDBNDs.Name = "menuOperationDeleteDVDBNDs"
+        '
+        'menuOperationDeleteDCXs
+        '
+        Me.menuOperationDeleteDCXs.Name = "menuOperationDeleteDCXs"
+        resources.ApplyResources(Me.menuOperationDeleteDCXs, "menuOperationDeleteDCXs")
+        '
+        'menuOperationDeleteBNDs
+        '
+        resources.ApplyResources(Me.menuOperationDeleteBNDs, "menuOperationDeleteBNDs")
+        Me.menuOperationDeleteBNDs.Name = "menuOperationDeleteBNDs"
+        '
+        'menuOperationDeleteBHDs
+        '
+        resources.ApplyResources(Me.menuOperationDeleteBHDs, "menuOperationDeleteBHDs")
+        Me.menuOperationDeleteBHDs.Name = "menuOperationDeleteBHDs"
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        resources.ApplyResources(Me.ToolStripSeparator3, "ToolStripSeparator3")
+        '
+        'menuOperationCancel
+        '
+        Me.menuOperationCancel.Checked = True
+        Me.menuOperationCancel.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.menuOperationCancel.Name = "menuOperationCancel"
+        resources.ApplyResources(Me.menuOperationCancel, "menuOperationCancel")
+        '
+        'HelpToolStripMenuItem
+        '
+        Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DarkSoulsModdingHelpToolStripMenuItem, Me.AboutToolStripMenuItem})
+        Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
+        resources.ApplyResources(Me.HelpToolStripMenuItem, "HelpToolStripMenuItem")
+        '
+        'DarkSoulsModdingHelpToolStripMenuItem
+        '
+        Me.DarkSoulsModdingHelpToolStripMenuItem.Checked = True
+        Me.DarkSoulsModdingHelpToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.DarkSoulsModdingHelpToolStripMenuItem.Name = "DarkSoulsModdingHelpToolStripMenuItem"
+        resources.ApplyResources(Me.DarkSoulsModdingHelpToolStripMenuItem, "DarkSoulsModdingHelpToolStripMenuItem")
+        '
+        'AboutToolStripMenuItem
+        '
+        Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
+        resources.ApplyResources(Me.AboutToolStripMenuItem, "AboutToolStripMenuItem")
         '
         'frmModPrep
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         resources.ApplyResources(Me, "$this")
         Me.Controls.Add(Me.Panel1)
-        Me.Controls.Add(Me.btnDeleteBHDs)
-        Me.Controls.Add(Me.btnDeleteFRPG)
-        Me.Controls.Add(Me.btnDeleteBNDs)
-        Me.Controls.Add(Me.btnBrowse)
         Me.Controls.Add(Me.lblProgOperation)
         Me.Controls.Add(Me.lblProgCurFile)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.progOperation)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.progCurFile)
-        Me.Controls.Add(Me.btnExtractBHDs)
-        Me.Controls.Add(Me.btnExtractFRPG)
-        Me.Controls.Add(Me.btnDeleteDCX)
-        Me.Controls.Add(Me.btnExtractDCX)
-        Me.Controls.Add(Me.btnExtractBNDs)
-        Me.Controls.Add(Me.btnModify)
         Me.Controls.Add(Me.txtEXEfile)
         Me.Controls.Add(Me.lblGAFile)
+        Me.Controls.Add(Me.MenuStrip1)
         Me.DoubleBuffered = True
+        Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "frmModPrep"
         Me.Panel1.ResumeLayout(False)
+        Me.MenuStrip1.ResumeLayout(False)
+        Me.MenuStrip1.PerformLayout()
         Me.ResumeLayout(False)
-        Me.PerformLayout
+        Me.PerformLayout()
 
-End Sub
+    End Sub
 
     Friend WithEvents txtEXEfile As TextBox
     Friend WithEvents lblGAFile As Label
-    Friend WithEvents btnModify As Button
     Friend WithEvents txtInfo As RichTextBox
-    Friend WithEvents btnExtractBNDs As Button
-    Friend WithEvents btnExtractDCX As Button
-    Friend WithEvents btnDeleteDCX As Button
-    Friend WithEvents btnExtractFRPG As Button
-    Friend WithEvents btnExtractBHDs As Button
     Friend WithEvents progCurFile As ProgressBar
     Friend WithEvents Label1 As Label
     Friend WithEvents progOperation As ProgressBar
     Friend WithEvents Label2 As Label
     Friend WithEvents lblProgCurFile As Label
     Friend WithEvents lblProgOperation As Label
-    Friend WithEvents btnBrowse As Button
-    Friend WithEvents btnDeleteBNDs As Button
-    Friend WithEvents btnDeleteFRPG As Button
-    Friend WithEvents btnDeleteBHDs As Button
     Friend WithEvents Panel1 As Panel
+    Friend WithEvents MenuStrip1 As MenuStrip
+    Friend WithEvents FileToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents menuOpenEXE As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents menuPatch As ToolStripMenuItem
+    Friend WithEvents menuPatchOverwrite As ToolStripMenuItem
+    Friend WithEvents menuPatchNew As ToolStripMenuItem
+    Friend WithEvents menuCloseEXE As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
+    Friend WithEvents menuExit As ToolStripMenuItem
+    Friend WithEvents menuOperation As ToolStripMenuItem
+    Friend WithEvents menuOperationExtract As ToolStripMenuItem
+    Friend WithEvents menuOperationExtractDVDBNDs As ToolStripMenuItem
+    Friend WithEvents menuOperationExtractDCXs As ToolStripMenuItem
+    Friend WithEvents menuOperationExtractBNDs As ToolStripMenuItem
+    Friend WithEvents menuOperationExtractBHDs As ToolStripMenuItem
+    Friend WithEvents menuOperationDelete As ToolStripMenuItem
+    Friend WithEvents menuOperationDeleteDVDBNDs As ToolStripMenuItem
+    Friend WithEvents menuOperationDeleteDCXs As ToolStripMenuItem
+    Friend WithEvents menuOperationDeleteBNDs As ToolStripMenuItem
+    Friend WithEvents menuOperationDeleteBHDs As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
+    Friend WithEvents menuOperationCancel As ToolStripMenuItem
+    Friend WithEvents HelpToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DarkSoulsModdingHelpToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
 End Class

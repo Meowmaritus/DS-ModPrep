@@ -104,6 +104,21 @@ Public Class frmModPrep
 
     End Function
 
+    Async Function SetEnabledAsync(ctrl As ToolStripMenuItem, enabled As Boolean) As Task
+        Await Task.Run(
+            Sub()
+                If ctrl.Enabled = enabled Then
+                    Return
+                End If
+
+                If ctrl.s Then
+                    ctrl.BeginInvoke(Sub() ctrl.Enabled = enabled)
+                Else
+                    ctrl.Enabled = enabled
+                End If
+            End Sub)
+    End Function
+
     Async Function SetEnabledAsync(ctrl As Control, enabled As Boolean) As Task
         Await Task.Run(
             Sub()
@@ -298,219 +313,6 @@ Public Class frmModPrep
 
         Return New String(System.Text.Encoding.ASCII.GetChars(bytes.ToArray))
     End Function
-
-    Private Async Sub btnBrowse_Click(sender As Object, e As EventArgs) Handles btnBrowse.Click
-        Await ShowFileSelectDlgAsync()
-    End Sub
-
-    Private Async Sub btnDeleteBHDs_Click(sender As Object, e As EventArgs) Handles btnDeleteBHDs.Click
-        'TODO: Implement this and enable button
-        Await Task.Delay(1) 'Gets VS to stop warning us about this method not using Await
-    End Sub
-
-    Private Async Sub btnDeleteBNDs_Click(sender As Object, e As EventArgs) Handles btnDeleteBNDs.Click
-        'TODO: Implement this and enable button
-        Await Task.Delay(1) 'Gets VS to stop warning us about this method not using Await
-    End Sub
-
-    Private Async Sub btnDeleteDCX_Click(sender As Object, e As EventArgs) Handles btnDeleteDCX.Click
-        Dim dcxlist() As String = Directory.GetFiles(dataPath, "*.dcx", SearchOption.AllDirectories)
-        Await SetLoadingAsync(True)
-        Await Task.Run(
-            Async Function()
-                Await AddTextLineAsync("Scanning DCX files...")
-
-                Await AppendOperationProgressMaxAsync(dcxlist.Sum(Function(x) New FileInfo(x).Length / 10000))
-
-                Await AddTextLineAsync("Deleting all DCX files...")
-                Dim curFile = 0
-                'No way to tell current progress on File.Delete
-                For Each dcx In dcxlist
-                    Await AddTextLineAsync("Deleting DCX [File " & curFile & "/" & dcxlist.Count & "]...", True)
-                    Await ResetProgCurAsync()
-                    Dim fileLength = (New FileInfo(dcx).Length)
-                    Await AppendCurrentProgressMaxAsync(fileLength / 10000)
-                    File.Delete(dcx)
-                    Await SetProgressAsync(fileLength / 10000)
-                    curFile += 1
-                Next
-            End Function)
-        Await SetLoadingAsync(False)
-        Await AddTextLineAsync("DCXs deleted.")
-    End Sub
-
-    Private Async Sub btnDeleteFRPG_Click(sender As Object, e As EventArgs) Handles btnDeleteFRPG.Click
-        'TODO: Implement this and enable button
-        Await Task.Delay(1) 'Gets VS to stop warning us about this method not using Await
-    End Sub
-
-    Private Async Sub btnExtractBHDs_Click(sender As Object, e As EventArgs) Handles btnExtractBHDs.Click
-        'TODO: Finish implementing this and enable button
-        'don't forget chrbnds contain tpf headers
-        Await ResetProgressBarsAsync()
-        Await SetLoadingAsync(True)
-        Await Task.Run(
-            Async Function()
-                Dim bndlist() As String = Directory.GetFiles(dataPath, "*.tpfbhd", SearchOption.AllDirectories)
-
-                For Each bnd In bndlist
-                    Await AppendOperationProgressMaxAsync(New FileInfo(bnd).Length)
-                Next
-
-                For Each bnd In bndlist
-                    Await ExtractBHF3Async(bnd)
-                Next
-            End Function)
-        Await SetLoadingAsync(False)
-
-    End Sub
-
-    Private Async Sub btnExtractBNDs_Click(sender As Object, e As EventArgs) Handles btnExtractBNDs.Click
-
-#If IS_64_BIT Then
-        Dim loadBdtIntoMemory = CheckLargeFileSupport()
-#Else
-        Dim loadBdtIntoMemory = False
-#End If
-        If loadBdtIntoMemory Then
-            Dim dlgRes = MessageBox.Show("Enough free RAM is available to store each large DVDBND. Would you like to load them directly into memory in order to slightly boost extraction speed? (Be sure to close any high memory usage applications if you have <= 8GB of RAM.)" + Environment.NewLine + Environment.NewLine + "Note: This feature is only available on the 64-bit version of DS-ModPrep.", "Load BNDs into RAM?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information)
-
-            If dlgRes = DialogResult.No Then
-                loadBdtIntoMemory = False
-                Await AddTextLineAsync("Extracting DVDBNDs from drive...")
-            ElseIf dlgRes = DialogResult.Cancel Then
-                Return
-            End If
-
-            Await AddTextLineAsync("Extracting DVDBNDs from RAM...")
-        Else
-            Await AddTextLineAsync("Extracting DVDBNDs from drive...")
-        End If
-
-        Await SetLoadingAsync(True)
-
-        For i As Integer = 0 To 3
-            'Divided by 1000 to prevent integer overflow on dvdbnd0 and/or dvdbnd1
-            'We have to make sure we divide the progress by 100 as well
-            Await AppendOperationProgressMaxAsync(New FileInfo(dataPath & "dvdbnd" & i & ".bdt").Length / 1000)
-        Next
-
-        Try
-            Await ExtractBHD5Async("dvdbnd0", loadBdtIntoMemory)
-            Await AddTextLineAsync("DVDBND0 extracted.")
-
-            Await ExtractBHD5Async("dvdbnd1", loadBdtIntoMemory)
-            Await AddTextLineAsync("DVDBND1 extracted.")
-
-            'These two are so small they can always be loaded into memory:
-            Await ExtractBHD5Async("dvdbnd2", True)
-            Await AddTextLineAsync("DVDBND2 extracted.")
-
-            Await ExtractBHD5Async("dvdbnd3", True)
-            Await AddTextLineAsync("DVDBND3 extracted.")
-        Catch ex As FileNotFoundException
-            MessageBox.Show("Could not find file to extract: """ & ex.FileName & """")
-            GC.Collect()
-            Return
-        Finally
-            lblProgCurFile.Visible = False
-            lblProgOperation.Visible = False
-            progOperation.Value = 0
-            progOperation.Maximum = 0
-            realCurrentProgress = 0
-            realCurrentProgressMax = 0
-        End Try
-
-        Await SetLoadingAsync(False)
-
-        Await AddTextLineAsync("All DVDBNDs extracted.")
-
-    End Sub
-
-    Private Async Sub btnExtractDCX_Click(sender As Object, e As EventArgs) Handles btnExtractDCX.Click
-        Await AddTextLineAsync("Scanning data directory for DCXs...")
-        Await SetLoadingAsync(True)
-        Dim dcxlist() As String = Directory.GetFiles(dataPath, "*.dcx", SearchOption.AllDirectories)
-        Await AppendOperationProgressMaxAsync(dcxlist.Sum(Function(x) New FileInfo(x).Length) / 1000)
-
-        Await AddTextLineAsync("Extracting all DCXs...")
-        'No way to tell current progress on decompression
-        Dim curIndex = 1
-        For Each dcx In dcxlist
-            Await AddTextLineAsync("Extracting DCX " & curIndex & "/" & dcxlist.Length & ": """ & dcx & """...", True)
-            Await ExtractDFLTAsync(dcx)
-            Await SetProgressAsync(New FileInfo(dcx).Length / 1000)
-            curIndex += 1
-        Next
-
-        Await SetLoadingAsync(False)
-
-        Await AddTextLineAsync("All DCXs extracted.")
-    End Sub
-
-    Private Async Sub btnExtractFRPG_Click(sender As Object, e As EventArgs) Handles btnExtractFRPG.Click
-
-        'excluded for now:
-        'remobnd
-        'chrtpfbdt
-        'tpf
-        'tpfBHD
-        'hkxbhd
-        'shaderbnd
-        Await AddTextLineAsync("Extracting all archives to ""C:\FRPG""...")
-        Await SetLoadingAsync(True)
-        Await Task.Run(
-            Async Function()
-                Dim list() As String
-                list = {"*.anibnd", "*.chrbnd", "*.chresdbnd", "*.fgbnd", "*.nvmbnd", "partsbnd", "*.luabnd", "*.talkesdbnd",
-                    "*.msgbnd", "*,mtdbnd", "*.objbnd", "*.rumblebnd", "*.parambnd", "*.paramdefbnd", "*.ffxbnd"}
-
-                Dim totalFileList = New List(Of String)
-
-                For Each bndtype In list
-                    totalFileList.AddRange(Directory.GetFiles(dataPath, bndtype, SearchOption.AllDirectories))
-                Next
-                Await AppendOperationProgressMaxAsync(totalFileList.Sum(Function(x) New FileInfo(x).Length))
-                Dim fileNum = 0
-                For Each bndFileToExtract In totalFileList
-                    Await AddTextLineAsync("Extracting the contents of [File " & fileNum.ToString("000") & "/" & totalFileList.Count.ToString("000") & "] """ & bndFileToExtract & """ to ""C:\FRPG\""...", True)
-                    Await ExtractBND3Async(bndFileToExtract)
-                    fileNum += 1
-                Next
-            End Function)
-        Await SetLoadingAsync(False)
-        Await AddTextLineAsync("C:\FRPG populated.")
-    End Sub
-
-    Private Async Sub btnModify_Click(sender As Object, e As EventArgs) Handles btnModify.Click
-        Await CreateFrpgFoldersAsync()
-
-        Dim EXEstream = New IO.FileStream(txtEXEfile.Text, IO.FileMode.Open)
-        Select Case selectedExeType
-            Case ExeType.ReleaseVanilla
-                Await SetLoadingAsync(True)
-                Await AppendCurrentProgressMaxAsync(25)
-                Await AppendOperationProgressMaxAsync(25)
-                Await modReleaseEXEAsync(EXEstream)
-            Case ExeType.DebugVanilla
-                Await SetLoadingAsync(True)
-                Await AppendCurrentProgressMaxAsync(31)
-                Await AppendOperationProgressMaxAsync(31)
-                Await modDebugEXEAsync(EXEstream)
-            Case ExeType.ReleaseModded
-                MessageBox.Show("The selected Dark Souls executable has already been modded", "Already Modded", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Return
-            Case ExeType.DebugModded
-                MessageBox.Show("The selected Dark Souls executable has already been modded", "Already Modded", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Return
-            Case ExeType.Beta
-                MessageBox.Show("The selected Dark Souls executable is not supported in this version of DS-ModPrep", "Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return
-        End Select
-        EXEstream.Dispose()
-        Await SetLoadingAsync(False)
-        Await AddTextLineAsync(txtEXEfile.Text & " has successfully been modified.")
-    End Sub
 
     Private Async Function CheckAndSetFileTxtAsync(file As String, showErrDlg As Boolean) As Task(Of Boolean)
         If Await CheckDarkSoulsExeVerAsync(file, showErrDlg) Then
@@ -1127,13 +929,18 @@ Public Class frmModPrep
 
     Private Async Function SetControlsEnabledAsync(enabled As Boolean) As Task
 
-        Await SetEnabledAsync(btnModify, enabled)
-        Await SetEnabledAsync(btnExtractBNDs, enabled)
-        Await SetEnabledAsync(btnExtractDCX, enabled)
-        Await SetEnabledAsync(btnDeleteDCX, enabled)
-        Await SetEnabledAsync(btnExtractFRPG, enabled)
-        Await SetEnabledAsync(btnExtractBHDs, enabled)
-        Await SetEnabledAsync(btnBrowse, enabled)
+        Await SetEnabledAsync(menuOperation, enabled)
+        Await SetEnabledAsync(menuOperationExtract, enabled)
+        Await SetEnabledAsync(menuOperationExtractDVDBNDs, enabled)
+        Await SetEnabledAsync(menuOperationExtractDCXs, enabled)
+        Await SetEnabledAsync(menuOperationExtractBNDs, enabled)
+        Await SetEnabledAsync(menuOperationExtractBHDs, enabled)
+        Await SetEnabledAsync(menuOperationDelete, enabled)
+        Await SetEnabledAsync(menuOperationDeleteDVDBNDs, enabled)
+        Await SetEnabledAsync(menuOperationDeleteDCXs, enabled)
+        Await SetEnabledAsync(menuOperationDeleteBNDs, enabled)
+        Await SetEnabledAsync(menuOperationDeleteBHDs, enabled)
+
         Await SetEnabledAsync(txtEXEfile, enabled)
         Await SetEnabledAsync(txtInfo, enabled)
 
@@ -1284,6 +1091,274 @@ Public Class frmModPrep
         Await file.WriteAsync(bytes, 0, bytes.Length)
         file.Dispose()
     End Function
+
+    Private Async Sub txtInfo_ContentsResized(sender As Object, e As ContentsResizedEventArgs) Handles txtInfo.ContentsResized
+        Await Task.Run(
+            Sub()
+                Dim newWidth = e.NewRectangle.Width + 32
+                Dim newHeight = e.NewRectangle.Height + 32
+
+                If txtInfo.InvokeRequired Then
+                    txtInfo.Invoke(
+                    Sub()
+                        If newWidth > txtInfo.Width Then
+                            txtInfo.Width = newWidth
+                        End If
+
+                        If newHeight > txtInfo.Height Then
+                            txtInfo.Height = newHeight
+                        End If
+                    End Sub)
+                Else
+                    If newWidth > txtInfo.Width Then
+                        txtInfo.Width = newWidth
+                    End If
+
+                    If newHeight > txtInfo.Height Then
+                        txtInfo.Height = newHeight
+                    End If
+                End If
+            End Sub)
+    End Sub
+
+    Private Sub menuOperationCancel_Click(sender As Object, e As EventArgs) Handles menuOperationCancel.Click
+
+    End Sub
+
+    Private Async Sub menuOperationExtractDVDBNDs_Click(sender As Object, e As EventArgs) Handles menuOperationExtractDVDBNDs.Click
+#If IS_64_BIT Then
+        Dim loadBdtIntoMemory = CheckLargeFileSupport()
+#Else
+        Dim loadBdtIntoMemory = False
+#End If
+        If loadBdtIntoMemory Then
+            Dim dlgRes = MessageBox.Show("Enough free RAM is available to store each large DVDBND. Would you like to load them directly into memory in order to slightly boost extraction speed? (Be sure to close any high memory usage applications if you have <= 8GB of RAM.)" + Environment.NewLine + Environment.NewLine + "Note: This feature is only available on the 64-bit version of DS-ModPrep.", "Load BNDs into RAM?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information)
+
+            If dlgRes = DialogResult.No Then
+                loadBdtIntoMemory = False
+                Await AddTextLineAsync("Extracting DVDBNDs from drive...")
+            ElseIf dlgRes = DialogResult.Cancel Then
+                Return
+            End If
+
+            Await AddTextLineAsync("Extracting DVDBNDs from RAM...")
+        Else
+            Await AddTextLineAsync("Extracting DVDBNDs from drive...")
+        End If
+
+        Await SetLoadingAsync(True)
+
+        For i As Integer = 0 To 3
+            'Divided by 1000 to prevent integer overflow on dvdbnd0 and/or dvdbnd1
+            'We have to make sure we divide the progress by 100 as well
+            Await AppendOperationProgressMaxAsync(New FileInfo(dataPath & "dvdbnd" & i & ".bdt").Length / 1000)
+        Next
+
+        Try
+            Await ExtractBHD5Async("dvdbnd0", loadBdtIntoMemory)
+            Await AddTextLineAsync("DVDBND0 extracted.")
+
+            Await ExtractBHD5Async("dvdbnd1", loadBdtIntoMemory)
+            Await AddTextLineAsync("DVDBND1 extracted.")
+
+            'These two are so small they can always be loaded into memory:
+            Await ExtractBHD5Async("dvdbnd2", True)
+            Await AddTextLineAsync("DVDBND2 extracted.")
+
+            Await ExtractBHD5Async("dvdbnd3", True)
+            Await AddTextLineAsync("DVDBND3 extracted.")
+        Catch ex As FileNotFoundException
+            MessageBox.Show("Could not find file to extract: """ & ex.FileName & """")
+            GC.Collect()
+            Return
+        Finally
+            lblProgCurFile.Visible = False
+            lblProgOperation.Visible = False
+            progOperation.Value = 0
+            progOperation.Maximum = 0
+            realCurrentProgress = 0
+            realCurrentProgressMax = 0
+        End Try
+
+        Await SetLoadingAsync(False)
+
+        Await AddTextLineAsync("All DVDBNDs extracted.")
+    End Sub
+
+    Private Async Sub menuOperationExtractDCXs_Click(sender As Object, e As EventArgs) Handles menuOperationExtractDCXs.Click
+        Await AddTextLineAsync("Scanning data directory for DCXs...")
+        Await SetLoadingAsync(True)
+        Dim dcxlist() As String = Directory.GetFiles(dataPath, "*.dcx", SearchOption.AllDirectories)
+        Await AppendOperationProgressMaxAsync(dcxlist.Sum(Function(x) New FileInfo(x).Length) / 1000)
+
+        Await AddTextLineAsync("Extracting all DCXs...")
+        'No way to tell current progress on decompression
+        Dim curIndex = 1
+        For Each dcx In dcxlist
+            Await AddTextLineAsync("Extracting DCX " & curIndex & "/" & dcxlist.Length & ": """ & dcx & """...", True)
+            Await ExtractDFLTAsync(dcx)
+            Await SetProgressAsync(New FileInfo(dcx).Length / 1000)
+            curIndex += 1
+        Next
+
+        Await SetLoadingAsync(False)
+
+        Await AddTextLineAsync("All DCXs extracted.")
+    End Sub
+
+    Private Async Sub menuOperationExtractBNDs_Click(sender As Object, e As EventArgs) Handles menuOperationExtractBNDs.Click
+        'excluded for now:
+        'remobnd
+        'chrtpfbdt
+        'tpf
+        'tpfBHD
+        'hkxbhd
+        'shaderbnd
+        Await AddTextLineAsync("Extracting all archives to ""C:\FRPG""...")
+        Await SetLoadingAsync(True)
+        Await Task.Run(
+            Async Function()
+                Dim list() As String
+                list = {"*.anibnd", "*.chrbnd", "*.chresdbnd", "*.fgbnd", "*.nvmbnd", "partsbnd", "*.luabnd", "*.talkesdbnd",
+                    "*.msgbnd", "*,mtdbnd", "*.objbnd", "*.rumblebnd", "*.parambnd", "*.paramdefbnd", "*.ffxbnd"}
+
+                Dim totalFileList = New List(Of String)
+
+                For Each bndtype In list
+                    totalFileList.AddRange(Directory.GetFiles(dataPath, bndtype, SearchOption.AllDirectories))
+                Next
+                Await AppendOperationProgressMaxAsync(totalFileList.Sum(Function(x) New FileInfo(x).Length))
+                Dim fileNum = 0
+                For Each bndFileToExtract In totalFileList
+                    Await AddTextLineAsync("Extracting the contents of [File " & fileNum.ToString("000") & "/" & totalFileList.Count.ToString("000") & "] """ & bndFileToExtract & """ to ""C:\FRPG\""...", True)
+                    Await ExtractBND3Async(bndFileToExtract)
+                    fileNum += 1
+                Next
+            End Function)
+        Await SetLoadingAsync(False)
+        Await AddTextLineAsync("C:\FRPG populated.")
+    End Sub
+
+    Private Async Sub menuOperationExtractBHDs_Click(sender As Object, e As EventArgs) Handles menuOperationExtractBHDs.Click
+        'TODO: Finish implementing this and enable button
+        'don't forget chrbnds contain tpf headers
+        Await ResetProgressBarsAsync()
+        Await SetLoadingAsync(True)
+        Await Task.Run(
+            Async Function()
+                Dim bndlist() As String = Directory.GetFiles(dataPath, "*.tpfbhd", SearchOption.AllDirectories)
+
+                For Each bnd In bndlist
+                    Await AppendOperationProgressMaxAsync(New FileInfo(bnd).Length)
+                Next
+
+                For Each bnd In bndlist
+                    Await ExtractBHF3Async(bnd)
+                Next
+            End Function)
+        Await SetLoadingAsync(False)
+    End Sub
+
+    Private Async Sub menuOperationDeleteDCXs_Click(sender As Object, e As EventArgs) Handles menuOperationDeleteDCXs.Click
+        Dim dcxlist() As String = Directory.GetFiles(dataPath, "*.dcx", SearchOption.AllDirectories)
+        Await SetLoadingAsync(True)
+        Await Task.Run(
+            Async Function()
+                Await AddTextLineAsync("Scanning DCX files...")
+
+                Await AppendOperationProgressMaxAsync(dcxlist.Sum(Function(x) New FileInfo(x).Length / 10000))
+
+                Await AddTextLineAsync("Deleting all DCX files...")
+                Dim curFile = 0
+                'No way to tell current progress on File.Delete
+                For Each dcx In dcxlist
+                    Await AddTextLineAsync("Deleting DCX [File " & curFile & "/" & dcxlist.Count & "]...", True)
+                    Await ResetProgCurAsync()
+                    Dim fileLength = (New FileInfo(dcx).Length)
+                    Await AppendCurrentProgressMaxAsync(fileLength / 10000)
+                    File.Delete(dcx)
+                    Await SetProgressAsync(fileLength / 10000)
+                    curFile += 1
+                Next
+            End Function)
+        Await SetLoadingAsync(False)
+        Await AddTextLineAsync("DCXs deleted.")
+    End Sub
+
+    Private Async Sub menuPatchOverwrite_Click(sender As Object, e As EventArgs) Handles menuPatchOverwrite.Click
+        Await CreateFrpgFoldersAsync()
+
+        Dim EXEstream = New IO.FileStream(txtEXEfile.Text, IO.FileMode.Open)
+        Select Case selectedExeType
+            Case ExeType.ReleaseVanilla
+                Await SetLoadingAsync(True)
+                Await AppendCurrentProgressMaxAsync(25)
+                Await AppendOperationProgressMaxAsync(25)
+                Await modReleaseEXEAsync(EXEstream)
+            Case ExeType.DebugVanilla
+                Await SetLoadingAsync(True)
+                Await AppendCurrentProgressMaxAsync(31)
+                Await AppendOperationProgressMaxAsync(31)
+                Await modDebugEXEAsync(EXEstream)
+            Case ExeType.ReleaseModded
+                MessageBox.Show("The selected Dark Souls executable has already been modded", "Already Modded", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            Case ExeType.DebugModded
+                MessageBox.Show("The selected Dark Souls executable has already been modded", "Already Modded", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            Case ExeType.Beta
+                MessageBox.Show("The selected Dark Souls executable is not supported in this version of DS-ModPrep", "Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+        End Select
+        EXEstream.Dispose()
+        Await SetLoadingAsync(False)
+        Await AddTextLineAsync(txtEXEfile.Text & " has successfully been modified.")
+    End Sub
+
+    Private Async Sub menuOpenEXE_Click(sender As Object, e As EventArgs) Handles menuOpenEXE.Click
+        Await ShowFileSelectDlgAsync()
+    End Sub
+
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
+        MessageBox.Show("Dark Souls data formats and patching: Wulf2k9." & Environment.NewLine & "GUI Programming: Meowmaritus", "About DS-ModPrep")
+    End Sub
+
+    Private Sub menuExit_Click(sender As Object, e As EventArgs) Handles menuExit.Click
+        Close()
+    End Sub
+
+    'Private Async Function GetExtentsOfText(rtb As RichTextBox) As Task(Of Point)
+    '    Return Await Task.Run(
+    '        Async Function() As Task(Of Point)
+    '            Dim ptOfVeryLastChar = rtb.GetPositionFromCharIndex(txtInfo.TextLength)
+    '            'If we only have 1 line, we already know which is the longest
+    '            If rtb.Lines.Length = 1 Then
+    '                Return ptOfVeryLastChar
+    '            End If
+    '            Dim longestLine = rtb.Lines.
+    '                Select(Function(lineText, index) New KeyValuePair(Of Integer, String)(index, lineText)). 'Pairs them with their index in the list
+    '                OrderByDescending(Function(keyValPair) keyValPair.Value.Length). 'Orders those pairs in descending order of line length
+    '                FirstOrDefault() 'Selects the first in the ordered list, which would have the highest line length
+    '            Dim firstCharIndexOfLongestLine = rtb.GetFirstCharIndexFromLine(longestLine.Key)
+    '            Dim lastCharIndexOfLongestLine = firstCharIndexOfLongestLine + longestLine.Value.Length
+    '            Dim ptOfRightmostChar = rtb.GetPositionFromCharIndex(lastCharIndexOfLongestLine)
+    '            Dim charSize = Await Task.Run(
+    '                Function() As Point
+    '                    Dim pt1stChr1stLine = rtb.GetPositionFromCharIndex(0)
+    '                    Dim pt2ndChr2ndLine = rtb.GetPositionFromCharIndex(rtb.GetFirstCharIndexFromLine(1) + 1)
+    '                    Return New Point(pt2ndChr2ndLine.X - pt1stChr1stLine.X, pt2ndChr2ndLine.Y - pt1stChr1stLine.Y)
+    '                End Function)
+    '            Return New Point(ptOfRightmostChar.X + charSize.X, ptOfVeryLastChar.Y + charSize.Y)
+    '        End Function)
+    'End Function
+
+    'Private Async Function ResizeRichTextBoxToFitTextAsync(rtb As RichTextBox) As Task
+
+    'End Function
+
+    'Private Async Sub txtInfo_TextChanged(sender As Object, e As EventArgs) Handles txtInfo.TextChanged
+
+    'End Sub
 End Class
 
 'List of Folder Aliases
